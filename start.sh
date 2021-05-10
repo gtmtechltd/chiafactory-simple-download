@@ -24,12 +24,13 @@ while true; do
   DOWNLOAD_URL="$( echo "${FIRST_PLOT}" | jq -r .url )"
 
   echo "Downloading plot ${PLOT_ID} : ${DOWNLOAD_URL}"
-  (cd "${DOWNLOAD_DIR}" && wget -r --tries=10 "${DOWNLOAD_URL}")
+  DOWNLOAD_FILE="$( basename "${DOWNLOAD_URL}" )"
+  (cd "${DOWNLOAD_DIR}" && wget -r --tries=10 "${DOWNLOAD_URL}" -O "${DOWNLOAD_FILE}")
 
   PLOT_FILE="$( echo "${DOWNLOAD_URL}" | sed -e 's/.*\///g' )"
 
   echo "Moving plot into ${FINAL_DIR}"
-  mv "${PLOT_FILE}" "${FINAL_DIR}/"
+  mv "${DOWNLOAD_FILE}" "${FINAL_DIR}/"
 
   echo "${PLOT_FILE} downloaded"
   read -r -p "Downloaded... press enter to continue" VAR
