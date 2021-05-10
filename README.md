@@ -21,7 +21,7 @@ Note: It is quicker if DOWNLOAD_DIR and FINAL_DIR is on the same disk/partition.
 
 ```
     export PLOTORDER_API_KEY=xxxxx   # Acquire a PLOTORDER_API_KEY on the website if available, or by contacting support
-    ./start.sh <order_id>
+    ./start.sh
 ```
 
 Disclaimer
