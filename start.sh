@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DOWNLOAD_DIR=/chiafarms1/dl
-FINAL_DIR=/chiafarms1/dl-complete
+DOWNLOAD_DIR=***
+FINAL_DIR=***
 
 if [ -z "${PLOTORDER_API_KEY}" ];then
   echo "Please set PLOTORDER_API_KEY. Ask support@chiafactory.com for one if you dont have one." >&2
