@@ -8,15 +8,16 @@ if [ -z "${PLOTORDER_API_KEY}" ];then
   exit 1
 fi
 
-set -e
+set -e -x
 
 while true; do 
 
-  PLOTS="$( curl -X --silent 'GET' \
+  echo "Retrieving current plots"
+  PLOTS="$( curl --silent -X GET \
     'https://chiafactory.com/api/v1/plot_orders/' \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
-    -H "Authorization: Token ${PLOTORDER_API_KEY}" ) | jq -r . )"
+    -H "Authorization: Token ${PLOTORDER_API_KEY}" )"
 
   FIRST_PLOT="$( echo "${PLOTS}" | jq -r '[.results[] | select( .status == "R" ) | .plots[] | select( .state == "D" )] | first' )"
   PLOT_ID="$( echo "${FIRST_PLOT}" | jq -r .id )"
@@ -36,8 +37,8 @@ while true; do
   sleep 600
 
   echo "Archiving plot id ${PLOT_ID}"
-  curl -X --silent 'PUT' \
-    'https://chiafactory.com/api/v1/plots/${PLOT_ID}' \
+  curl --silent -X PUT \
+    "https://chiafactory.com/api/v1/plots/${PLOT_ID}" \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -H "Authorization: Token ${PLOTORDER_API_KEY}" \
@@ -48,8 +49,8 @@ while true; do
   | sed -e 's/^/    /g'
 
   echo "Deleting plot id ${PLOT_ID}"
-  curl -X --silent 'DELETE' \
-    'https://chiafactory.com/api/v1/plots/${PLOT_ID}' \
+  curl --silent -X DELETE \
+    "https://chiafactory.com/api/v1/plots/${PLOT_ID}" \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -H "Authorization: Token ${PLOTORDER_API_KEY}" \
