@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DOWNLOAD_DIR=***
-FINAL_DIR=***
+DOWNLOAD_DIR=***   # changeme
+FINAL_DIR=***      # changeme
 
 if [ -z "${PLOTORDER_API_KEY}" ];then
   echo "Please set PLOTORDER_API_KEY. Ask support@chiafactory.com for one if you dont have one." >&2
@@ -19,6 +19,7 @@ while true; do
     -H 'Content-Type: application/json' \
     -H "Authorization: Token ${PLOTORDER_API_KEY}" )"
 
+  echo "${PLOTS}" | jq -r .
   FIRST_PLOT="$( echo "${PLOTS}" | jq -r '[.results[] | select( .status == "R" ) | .plots[] | select( .state == "D" )] | first' )"
   PLOT_ID="$( echo "${FIRST_PLOT}" | jq -r .id )"
   DOWNLOAD_URL="$( echo "${FIRST_PLOT}" | jq -r .url )"
@@ -30,31 +31,33 @@ while true; do
   PLOT_FILE="$( echo "${DOWNLOAD_URL}" | sed -e 's/.*\///g' )"
 
   echo "Moving plot into ${FINAL_DIR}"
-  mv "${DOWNLOAD_FILE}" "${FINAL_DIR}/"
+  mv "${DOWNLOAD_DIR}/${DOWNLOAD_FILE}" "${FINAL_DIR}/"
 
   echo "${PLOT_FILE} downloaded"
-  read -r -p "Downloaded... press enter to continue" VAR
-
-  sleep 600  # Currently sleeping until tested, as sometimes read doesnt work if no tty attached
 
   echo "Archiving plot id ${PLOT_ID}"
   curl --silent -X PUT \
-    "https://chiafactory.com/api/v1/plots/${PLOT_ID}" \
+    "https://chiafactory.com/api/v1/plots/${PLOT_ID}/" \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -H "Authorization: Token ${PLOTORDER_API_KEY}" \
     -d "{
       \"id\": \"${PLOT_ID}\",
-      \"state\": \"R\"
+      \"download_state\": 2
     }" \
   | sed -e 's/^/    /g'
 
   echo "Deleting plot id ${PLOT_ID}"
-  curl --silent -X DELETE \
-    "https://chiafactory.com/api/v1/plots/${PLOT_ID}" \
+  curl --silent -X PUT \
+    "https://chiafactory.com/api/v1/plots/${PLOT_ID}/" \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -H "Authorization: Token ${PLOTORDER_API_KEY}" \
+    -d "{
+      \"id\": \"${PLOT_ID}\",
+      \"state\": \"X\",
+      \"download_state\": 3
+    }" \
   | sed -e 's/^/    /g'
 
 done
