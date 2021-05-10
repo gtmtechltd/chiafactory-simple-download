@@ -24,16 +24,18 @@ while true; do
   PLOT_ID="$( echo "${FIRST_PLOT}" | jq -r .id )"
   DOWNLOAD_URL="$( echo "${FIRST_PLOT}" | jq -r .url )"
 
-  echo "Downloading plot ${PLOT_ID} : ${DOWNLOAD_URL}"
   DOWNLOAD_FILE="$( basename "${DOWNLOAD_URL}" )"
-  (cd "${DOWNLOAD_DIR}" && wget -r --tries=10 "${DOWNLOAD_URL}" -O "${DOWNLOAD_FILE}")
-
-  PLOT_FILE="$( echo "${DOWNLOAD_URL}" | sed -e 's/.*\///g' )"
+  if [ -f "${FINAL_DIR}/${DOWNLOAD_FILE}" ];then
+    echo "Not downloading already-existing plot ${PLOT_ID} : ${DOWNLOAD_URL}"
+  else
+    echo "Downloading plot ${PLOT_ID} : ${DOWNLOAD_URL}"
+    (cd "${DOWNLOAD_DIR}" && wget -r --tries=10 "${DOWNLOAD_URL}" -O "${DOWNLOAD_FILE}")
+  fi
 
   echo "Moving plot into ${FINAL_DIR}"
   mv "${DOWNLOAD_DIR}/${DOWNLOAD_FILE}" "${FINAL_DIR}/"
 
-  echo "${PLOT_FILE} downloaded"
+  echo "${DOWNLOAD_FILE} downloaded"
 
   echo "Archiving plot id ${PLOT_ID}"
   curl --silent -X PUT \
