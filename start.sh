@@ -34,7 +34,7 @@ while true; do
   echo "${PLOT_FILE} downloaded"
   read -r -p "Downloaded... press enter to continue" VAR
 
-  sleep 600
+  sleep 600  # Currently sleeping until tested, as sometimes read doesnt work if no tty attached
 
   echo "Archiving plot id ${PLOT_ID}"
   curl --silent -X PUT \
