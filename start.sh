@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DOWNLOAD_DIR=***   # changeme
-FINAL_DIR=***      # changeme
+DOWNLOAD_DIR=***
+FINAL_DIR=***
 
 if [ -z "${PLOTORDER_API_KEY}" ];then
   echo "Please set PLOTORDER_API_KEY. Ask support@chiafactory.com for one if you dont have one." >&2
@@ -30,12 +30,10 @@ while true; do
   else
     echo "Downloading plot ${PLOT_ID} : ${DOWNLOAD_URL}"
     (cd "${DOWNLOAD_DIR}" && wget -r --tries=10 "${DOWNLOAD_URL}" -O "${DOWNLOAD_FILE}")
+    echo "Moving plot into ${FINAL_DIR}"
+    mv "${DOWNLOAD_DIR}/${DOWNLOAD_FILE}" "${FINAL_DIR}/"
+    echo "${DOWNLOAD_FILE} downloaded"
   fi
-
-  echo "Moving plot into ${FINAL_DIR}"
-  mv "${DOWNLOAD_DIR}/${DOWNLOAD_FILE}" "${FINAL_DIR}/"
-
-  echo "${DOWNLOAD_FILE} downloaded"
 
   echo "Archiving plot id ${PLOT_ID}"
   curl --silent -X PUT \
