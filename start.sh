@@ -51,15 +51,16 @@ while true; do
     for i in 1 2 3 ; do
       log "- available plots(${i}):"
       PLOT_CANDIDATE="PLOT${i}"
-      PLOT_VALUE="$( echo "${!PLOT_CANDIDATE}" | jq -r .url )"
+      PLOT_URL="$( echo "${!PLOT_CANDIDATE}" | jq -r .url )"
       log "  - url: ${PLOT_VALUE}"
-      PLOT_FILE="$( basename "${PLOT_VALUE}" )"
+      PLOT_FILE="$( basename "${PLOT_URL}" )"
       log "  - filename: ${PLOT_FILE}"
       if [ "${PLOT_FILE}" == "" ] || [ "${PLOT_FILE}" == "null" ];then
         log "    - plotfile is null - ignoring"
         continue
       fi
-      if echo "${ACTIVE_DOWNLOADS}" | grep -q -F "${PLOT_FILE}" ; then
+      ACTIVE_DOWNLOADS="$( ps auxww | grep wget | grep plot | sed -e 's/.* //' )"  # calculate it again
+      if echo "${ACTIVE_DOWNLOADS}" | grep -q -F "${PLOT_FILE}.dl" ; then
         log "    - plotfile is already being downloaded by another process - ignoring"
         continue
       fi

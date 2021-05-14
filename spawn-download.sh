@@ -34,10 +34,14 @@ DOWNLOAD_FILE="$( basename "${DOWNLOAD_URL}" )"
 if [ -f "${FINAL_DIR}/${DOWNLOAD_FILE}" ];then
   log "* Not downloading already-existing plot ${PLOT_ID} : ${DOWNLOAD_URL}"
 else
+  if [ -f "${DOWNLOAD_DIR}/${DOWNLOAD_FILE}.dl" ];then
+    log "* Another process is downloading plot ${PLOT_ID} : ${DOWNLOAD_URL}"
+    exit 
+  fi
   log "- Downloading plot ${PLOT_ID} : ${DOWNLOAD_URL}"
-  (cd "${DOWNLOAD_DIR}" && wget -r --tries=10 "${DOWNLOAD_URL}" -O "${DOWNLOAD_FILE}")
+  (cd "${DOWNLOAD_DIR}" && wget -r --tries=10 "${DOWNLOAD_URL}" -O "${DOWNLOAD_FILE}.dl")
   log "- Moving plot into ${FINAL_DIR}"
-  mv "${DOWNLOAD_DIR}/${DOWNLOAD_FILE}" "${FINAL_DIR}/"
+  mv "${DOWNLOAD_DIR}/${DOWNLOAD_FILE}.dl" "${FINAL_DIR}/${DOWNLOAD_FILE}"
   log "${DOWNLOAD_FILE} downloaded"
 fi
 
