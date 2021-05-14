@@ -4,7 +4,7 @@ BASEDIR="$( cd "$(dirname "$0" )" && /bin/pwd )"
 CONFIG_FILE="${BASEDIR}/config.json"
 
 DOWNLOAD_DIR="$(      jq -r .download_dir      < "${CONFIG_FILE}" )"
-FINAL_DIR="$(         jq -r .download_dir      < "${CONFIG_FILE}" )"
+FINAL_DIR="$(         jq -r .final_dir         < "${CONFIG_FILE}" )"
 PLOTORDER_API_KEY="$( jq -r .plotorder_api_key < "${CONFIG_FILE}" )"
 PLOT_ID=$1
 DOWNLOAD_URL=$2
