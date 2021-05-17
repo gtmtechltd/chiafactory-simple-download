@@ -1,6 +1,8 @@
 chiafactory-simple-download
 ===========================
 
+Donation address `xch1gzwvxshufu0crxqr5npcz0cv9mg6gj0zwefxh6rhdvzcwpv8nwjs9h7u8c` :)
+
 **new** - now multithreaded - up to 3 concurrent download threads
 
 It will only download the first undownloaded plot from the first active plot_order. It continues to do this in a loop.
